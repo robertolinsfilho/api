@@ -4,7 +4,7 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
-use App\Car;
+use App\Models\Car;
 use Validator;
 use App\Http\Resources\Car as CarResource;
 
@@ -29,11 +29,13 @@ class CarController extends BaseController
      */
     public function store(Request $request)
     {
+
         $input = $request->all();
 
         $validator = Validator::make($input, [
             'name' => 'required',
-            'detail' => 'required'
+            'color' => 'required',
+            'model' => 'required'
         ]);
 
         if($validator->fails()){
@@ -42,7 +44,7 @@ class CarController extends BaseController
 
         $car = Car::create($input);
 
-        return $this->sendResponse(new CarResource($car), 'Product created successfully.');
+        return $this->sendResponse(new CarResource($car), 'Carro criado com sucesso.');
     }
 
     /**
