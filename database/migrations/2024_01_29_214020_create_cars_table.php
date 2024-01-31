@@ -18,6 +18,7 @@ class CreateCarsTable extends Migration
             $table->string('name', '50');
             $table->string('color','20');
             $table->string('model','20');
+            $table->integer('user')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

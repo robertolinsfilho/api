@@ -7,9 +7,16 @@ use App\Http\Controllers\API\BaseController as BaseController;
 use App\Models\Car;
 use Validator;
 use App\Http\Resources\Car as CarResource;
-
+use App\Repositories\InterfaceCarRepository;
 class CarController extends BaseController
 {
+
+    protected $carRepository;
+
+    public function __construct(InterfaceCarRepository $carRepository)
+    {
+        $this->carRepository = $carRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -17,9 +24,10 @@ class CarController extends BaseController
      */
     public function index()
     {
-        $car = Car::all();
+        $car = $this->carRepository->allCar();
 
-        return $this->sendResponse(CarResource::collection($car), 'Products retrieved successfully.');
+
+        return $this->sendResponse(CarResource::collection($car), 'Carros listados com sucesso.');
     }
     /**
      * Store a newly created resource in storage.
@@ -42,7 +50,7 @@ class CarController extends BaseController
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $car = Car::create($input);
+        $car = $this->carRepository->storeCar($input);
 
         return $this->sendResponse(new CarResource($car), 'Carro criado com sucesso.');
     }
@@ -55,12 +63,10 @@ class CarController extends BaseController
      */
     public function show($id)
     {
-        $car = Car::find($id);
-
-        if (is_null($car)) {
-            return $this->sendError('Product not found.');
+        if (is_null($id)) {
+            return $this->sendError('Carro não encontrado.');
         }
-
+        $car = $this->carRepository->findCar($id);
         return $this->sendResponse(new CarResource($car), 'Carro cadastrado com sucesso.');
     }
 
@@ -71,22 +77,24 @@ class CarController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Car $car)
+    public function update(Request $request)
     {
         $input = $request->all();
 
         $validator = Validator::make($input, [
+            'id' => 'required',
             'name' => 'required',
-            'detail' => 'required'
+            'color' => 'required',
+            'model' => 'required',
+
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $car->name = $input['name'];
-        $car->detail = $input['detail'];
-        $car->save();
+        $car = $this->carRepository->updateCar($input, $input['id']);
+
 
         return $this->sendResponse(new CarResource($car), 'Carro atualizado com sucesso.');
     }
@@ -97,9 +105,9 @@ class CarController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Car $car)
+    public function destroy($id)
     {
-        $car->delete();
+        $this->carRepository->destroyCar($id);
 
         return $this->sendResponse([], 'Carro deletado com sucesso successfully.');
     }

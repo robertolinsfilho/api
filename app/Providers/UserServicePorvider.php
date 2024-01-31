@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
+use App\Repositories\InterfaceUserRepository;
+use App\Repositories\UserRepository;
+use Carbon\Laravel\ServiceProvider;
+
+class UserServicePorvider extends ServiceProvider
 {
     /**
      * User any application services.
@@ -13,7 +16,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(InterfaceUserRepository::class, UserRepository::class);
     }
 
     /**
