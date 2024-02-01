@@ -27,7 +27,7 @@ Route::get('users/car/{id}', 'API\UserController@car');
 Route::get('cars', 'API\CarController@index');
 Route::post('cars/store', 'API\CarController@store');
 Route::get('cars/show/{id}', 'API\CarController@show');
-Route::post('cars/update', 'API\CarController@update');
+Route::post('cars/update/{id}', 'API\CarController@update');
 Route::post('cars/destroy/{id}', 'API\CarController@destroy');
 
 

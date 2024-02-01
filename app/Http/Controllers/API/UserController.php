@@ -52,9 +52,9 @@ class UserController extends BaseController
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
         $user = $this->userRepository->storeUser($input);
-        $success['name'] =  $user->name;
 
-        return $this->sendResponse($success, 'Usuario registrado com sucesso');
+
+        return $this->sendResponse($input['name'], $user);
     }
 
     /**
@@ -69,7 +69,10 @@ class UserController extends BaseController
             return $this->sendError('Carro não encontrado.');
         }
         $user = $this->userRepository->findUser($id);
-        return $this->sendResponse(new UserResource($user), 'Usuario cadastrado com sucesso.');
+        if($user == null){
+            $user = 'Usuario não encontrado';
+        }
+        return $this->sendResponse($user, '');
     }
 
     /**
@@ -95,7 +98,7 @@ class UserController extends BaseController
         $user = $this->userRepository->updateUser($input, $input['id']);
 
 
-        return $this->sendResponse(new UserResource($user), 'Usuario atualizado com sucesso.');
+        return $this->sendResponse([],$user );
     }
 
     /**

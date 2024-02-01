@@ -52,7 +52,7 @@ class CarController extends BaseController
 
         $car = $this->carRepository->storeCar($input);
 
-        return $this->sendResponse(new CarResource($car), 'Carro criado com sucesso.');
+        return $this->sendResponse([$input], $car);
     }
 
     /**
@@ -96,7 +96,7 @@ class CarController extends BaseController
         $car = $this->carRepository->updateCar($input, $input['id']);
 
 
-        return $this->sendResponse(new CarResource($car), 'Carro atualizado com sucesso.');
+        return $this->sendResponse([$input], $car);
     }
 
     /**

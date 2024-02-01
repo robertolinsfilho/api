@@ -5,6 +5,7 @@ namespace App\Repositories;
 
 use App\Models\Car;
 use App\Models\User;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 
 class UserRepository implements InterfaceUserRepository
@@ -17,7 +18,12 @@ class UserRepository implements InterfaceUserRepository
 
     public function storeUser($data)
     {
-        return User::create($data);
+        try {
+            User::create($data);
+        }catch (QueryException $exception){
+            return 'Erro ao criar usuario';
+        }
+        return 'Usuario ao criado com sucesso';
     }
 
     public function findUser($id)
@@ -27,39 +33,50 @@ class UserRepository implements InterfaceUserRepository
 
     public function updateUser($data, $id)
     {
-        $user = User::query()
-            ->where('id', $id)
-            ->first();
+        try{
+            $user = User::query()
+                ->where('id', $id)
+                ->first();
 
-        $user->name = $data['name'];
-        $user->email = $data['email'];
-        $user->save();
+            $user->name = $data['name'];
+            $user->email = $data['email'];
+            $user->save();
+        } catch (QueryException $e){
+            return 'Usuario não atualizado';
+        }
 
-        return $user;
+
+        return 'Usuario  atualizado';
 
     }
 
     public function destroyUser($id)
     {
-        $user = User::query()
-            ->where('id', $id)
-            ->update(['deleted_at' => Carbon::now()]);
-         Car::query()
-            ->where('user', $id)
-            ->update(['user' => null]);
-
+        try {
+            $user = User::query()
+                ->where('id', $id)
+                ->update(['deleted_at' => Carbon::now()]);
+            Car::query()
+                ->where('user', $id)
+                ->update(['user' => null]);
+        }catch(QueryException $e){
+            return 'Erro ao deletar usuario';
+        }
         if($user == 0){
-            return 'Usuario não deletado com sucesso.';
+            return 'Erro ao deletar usuario';
         }
         return 'Usuario deletado com sucesso.';
     }
 
     public function connectUser($data)
     {
-
-        $car = Car::query()
-            ->where('id', $data['id_car'])
-            ->update(['user' => $data['id_user']]);
+        try {
+            $car = Car::query()
+                ->where('id', $data['id_car'])
+                ->update(['user' => $data['id_user']]);
+        }catch (QueryException $e){
+            return 'Usuario não associado.';
+        }
         if($car == 0){
             return 'Usuario não associado.';
         }
@@ -67,9 +84,13 @@ class UserRepository implements InterfaceUserRepository
     }
     public function disconnectUser($data)
     {
+        try {
        $car = Car::query()
             ->where('id', $data['id_car'])
             ->update(['user' => null]);
+        }catch (QueryException $e){
+            return 'Usuario não desassociado.';
+        }
         if($car == 0){
             return 'Usuario não desassociado.';
         }

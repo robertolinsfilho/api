@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\Car;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -18,7 +19,13 @@ class CarRepository implements InterfaceCarRepository
 
     public function storeCar($data)
     {
-        return Car::create($data);
+        try {
+             Car::create($data);
+        }catch (QueryException $exception){
+            return 'Erro ao criar carro';
+        }
+        return 'Carro ao criado com sucesso';
+
     }
 
     public function findCar($id)
@@ -28,7 +35,7 @@ class CarRepository implements InterfaceCarRepository
 
     public function updateCar($data, $id)
     {
-
+        try{
         $car = Car::query()
             ->where('id', $id)
             ->first();
@@ -37,15 +44,23 @@ class CarRepository implements InterfaceCarRepository
         $car->color = $data['color'];
         $car->model = $data['model'];
         $car->save();
+        } catch (QueryException $e){
+            return 'Carro não atualizado';
+        }
 
-        return $car;
+
+        return 'Carro atualizado';
     }
 
     public function destroyCar($id)
     {
+        try {
         $car = Car::query()
             ->where('id', $id)
             ->update(['deleted_at' => Carbon::now(),'user' => null]);
+        }catch(QueryException $e){
+            return 'Erro ao deletar carro';
+        }
         if($car == 0){
             return 'Carro não deletado com sucesso.';
         }
