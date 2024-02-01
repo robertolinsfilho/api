@@ -86,15 +86,12 @@ class UserController extends BaseController
         $validator = Validator::make($input, [
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'required',
-
         ]);
 
         if($validator->fails()){
             return $this->sendError('Validation Error.', $validator->errors());
         }
 
-        $input['password'] = bcrypt($input['password']);
         $user = $this->userRepository->updateUser($input, $input['id']);
 
 
@@ -109,9 +106,50 @@ class UserController extends BaseController
      */
     public function destroy($id)
     {
-        $this->userRepository->destroyUser($id);
+        $user = $this->userRepository->destroyUser($id);
 
-        return $this->sendResponse([], 'Usuario deletado com sucesso.');
+        return $this->sendResponse([], $user);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function connect(Request $request)
+    {
+
+       $connect =  $this->userRepository->connectUser($request->all());
+
+        return $this->sendResponse([], $connect);
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function disconnect(Request $request)
+    {
+
+        $car = $this->userRepository->disconnectUser($request->all());
+
+        return $this->sendResponse([], $car);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function car($id)
+    {
+
+        $car = $this->userRepository->carShow($id);
+
+        return $this->sendResponse([$car], 'carros exibidos com sucesso.');
     }
 
 }

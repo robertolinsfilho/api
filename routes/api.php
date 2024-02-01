@@ -20,11 +20,15 @@ Route::post('users/store', 'API\UserController@store');
 Route::get('users/show/{id}', 'API\UserController@show');
 Route::post('users/update', 'API\UserController@update');
 Route::post('users/destroy/{id}', 'API\UserController@destroy');
+Route::post('users/connect', 'API\UserController@connect');
+Route::post('users/disconnect', 'API\UserController@disconnect');
+Route::get('users/car/{id}', 'API\UserController@car');
 
 Route::get('cars', 'API\CarController@index');
 Route::post('cars/store', 'API\CarController@store');
 Route::get('cars/show/{id}', 'API\CarController@show');
 Route::post('cars/update', 'API\CarController@update');
 Route::post('cars/destroy/{id}', 'API\CarController@destroy');
+
 
 

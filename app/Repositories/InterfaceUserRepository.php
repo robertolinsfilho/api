@@ -9,4 +9,7 @@ interface InterfaceUserRepository
     public function findUser($id);
     public function updateUser($data, $id);
     public function destroyUser($id);
+    public function connectUser($data);
+    public function disconnectUser($data);
+    public function carShow($id);
 }

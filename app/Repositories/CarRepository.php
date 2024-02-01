@@ -37,6 +37,7 @@ class CarRepository implements InterfaceCarRepository
         $car->color = $data['color'];
         $car->model = $data['model'];
         $car->save();
+
         return $car;
     }
 
@@ -44,7 +45,12 @@ class CarRepository implements InterfaceCarRepository
     {
         $car = Car::query()
             ->where('id', $id)
-            ->update(['deleted_at' => Carbon::now()]);
+            ->update(['deleted_at' => Carbon::now(),'user' => null]);
+        if($car == 0){
+            return 'Carro não deletado com sucesso.';
+        }
+        return 'Carro deletado com sucesso.';
+
 
 
     }

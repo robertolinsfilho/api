@@ -107,8 +107,8 @@ class CarController extends BaseController
      */
     public function destroy($id)
     {
-        $this->carRepository->destroyCar($id);
+        $car = $this->carRepository->destroyCar($id);
 
-        return $this->sendResponse([], 'Carro deletado com sucesso successfully.');
+        return $this->sendResponse([], $car);
     }
 }
